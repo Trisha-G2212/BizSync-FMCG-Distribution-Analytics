@@ -1,273 +1,749 @@
-# BizSync — Enterprise FMCG Distribution & Analytics Platform
+<div align="center">
 
-**React · FastAPI · Python · PostgreSQL · REST APIs · Docker · Excel Analytics**
+# BizSync
 
-BizSync is a full-stack FMCG (Fast-Moving Consumer Goods) distribution and analytics application for managing products, retailers, distributors, orders, inventory, Excel imports, and operational issues. It brings everyday distribution workflows together with business dashboards and reporting.
+### Enterprise FMCG Distribution & Analytics Platform
 
-> **Project status:** Completed as a 15-phase development project. The screenshots below show a locally running application with sample data; they do not represent a publicly hosted demo.
+A full-stack platform for managing products, distributors, retailers, orders, inventory and sales, with transaction-safe stock handling, validated Excel imports, role-based access and an SQL-driven analytics dashboard.
 
-## Application Screenshots
+![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16+-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-28%20passing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-### Analytics Dashboard
-
-![BizSync analytics dashboard showing revenue, orders, inventory KPIs and charts](docs/screenshots/dashboard.png)
-
-The dashboard summarizes revenue, orders, products, retailers, distributors, stock levels, and pending orders. It also visualizes sales trends, revenue by category, top products, and top retailers.
-
-### Excel Data Import & Validation
-
-![Excel import results with processed records, failures and row-level errors](docs/screenshots/excel-import.png)
-
-Excel import supports structured uploads and displays imported records, duplicates, invalid rows, and downloadable error reports. The example screenshot shows 6 records processed, 3 imported, and 3 failed.
-
-### Troubleshooting & Issue Tracking
-
-![BizSync issue tracker with severity and status filters](docs/screenshots/troubleshooting.png)
-
-The troubleshooting module tracks issues by module, severity, and resolution status, supporting user acceptance testing (UAT) and root-cause analysis.
-
-## Key Features
-
-- **Products & inventory:** Maintain product records, monitor stock, and identify low-stock items.
-- **Retailers & distributors:** Manage FMCG distribution participants.
-- **Orders:** Create and confirm orders with transaction-aware inventory handling.
-- **Sales analytics:** Review revenue KPIs, sales trends, product performance, and retailer performance.
-- **Excel import:** Validate spreadsheet records and produce actionable row-level error reports.
-- **Authentication:** JWT-based authentication and role-based access control.
-- **Issue tracking:** Record and review operational issues, severity, and resolution status.
-- **Testing & documentation:** Automated tests, UAT scenarios, API documentation, and technical design notes.
-- **Docker deployment:** Run frontend, backend, and PostgreSQL together using Docker Compose.
-
-## Technology Stack
-
-| Area | Technologies |
-| --- | --- |
-| Frontend | React, JavaScript |
-| Backend | Python, FastAPI |
-| API | REST, OpenAPI / Swagger UI |
-| Database | PostgreSQL |
-| Authentication | JWT and role-based access control |
-| Data processing | Python, Pandas, Excel files |
-| Testing | Pytest, user acceptance testing |
-| Deployment | Docker, Docker Compose |
-| Version control | Git, GitHub |
-
-## Architecture
-
-```text
-Browser / React frontend (port 3000)
-              |
-              | REST / HTTP
-              v
-FastAPI backend (port 8000)
-              |
-       API routers
-              |
-       Service layer
-              |
-     Repository layer
-              |
-              v
-PostgreSQL database (port 5432)
-```
-
-The backend separates HTTP request handling, business logic, and database access into routers, services, and repositories. For implementation details, see [Architecture](docs/architecture.md).
-
-## Repository Structure
-
-```text
-bizsync/
-├── backend/             # FastAPI application and backend dependencies
-├── database/            # Database-related resources
-├── docs/                # Architecture, API, schema, troubleshooting, screenshots
-│   └── screenshots/
-│       ├── dashboard.png
-│       ├── excel-import.png
-│       ├── troubleshooting.png
-│       └── docker-containers.png
-├── frontend/            # React application
-├── sample_data/         # Example data for testing/imports
-├── tests/               # Test resources
-├── .env.example         # Environment variable template
-├── .gitignore           # Git exclusion rules
-├── docker-compose.yml   # Multi-container configuration
-└── README.md
-```
-
-## Getting Started — Docker (Recommended)
-
-### Prerequisites
-
-- [Git](https://git-scm.com/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
-
-### 1. Clone the repository
-
-```powershell
-git clone https://github.com/Trisha-G2212/BizSync-FMCG-Distribution-Analytics.git
-cd BizSync-FMCG-Distribution-Analytics
-```
-
-Replace `Trisha-G2212` with your GitHub username. If you downloaded the project as a ZIP instead, extract it and open a terminal inside the folder containing `docker-compose.yml`.
-
-### 2. Create the environment file
-
-In PowerShell, from the repository root:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Review `.env` and adjust settings for your local machine. **Never commit real `.env` files, passwords, API keys, or private business data.**
-
-### 3. Start all services
-
-```powershell
-docker compose up --build -d
-```
-
-Check the services:
-
-```powershell
-docker compose ps
-```
-
-### 4. Open the application
-
-When the containers are healthy, use the ports shown in the Docker setup screenshot:
-
-| Service | Local URL / port |
-| --- | --- |
-| Frontend | http://localhost:3000 |
-| Backend API | http://localhost:8000 |
-| Swagger UI | http://localhost:8000/docs |
-| ReDoc | http://localhost:8000/redoc |
-| PostgreSQL | `localhost:5432` (database connection, not a web page) |
-
-**Note:** These are the ports visible in the supplied Docker Desktop screenshot. If your final Compose configuration uses different mappings, follow `docker compose ps` instead.
-
-### 5. Stop or restart the project
-
-```powershell
-# Stop containers without deleting database volumes
-docker compose down
-
-# Start again
-docker compose up -d
-
-# View logs
-docker compose logs -f
-```
-
-Avoid `docker compose down -v` unless you intentionally want to remove Compose-managed volumes, which may include your database data.
-
-### Docker Deployment Screenshot
-
-![Docker Desktop showing BizSync PostgreSQL, backend and frontend containers running](docs/screenshots/docker-containers.png)
-
-## Local Development (Without Docker)
-
-For manual development, install Python, Node.js/npm, and PostgreSQL first, and configure a working local database and `.env` file.
-
-### Backend — Windows PowerShell
-
-From the repository root:
-
-```powershell
-cd backend
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-After configuring PostgreSQL and the environment variables, the project's previously documented setup used:
-
-```powershell
-python -m app.create_tables
-python -m app.seed_data
-uvicorn app.main:app --reload
-```
-
-These initialization module names come from the earlier project instructions and should be checked against the actual final `backend/app` directory before use. Database seeding is usually a one-time setup operation.
-
-### Frontend — separate PowerShell terminal
-
-From the repository root:
-
-```powershell
-cd frontend
-npm install
-npm start
-```
-
-The `npm start` command was described in the earlier BizSync run instructions. Verify the scripts in `frontend/package.json`; if the project instead defines `dev`, use `npm run dev`.
-
-## API Documentation
-
-FastAPI automatically exposes interactive API documentation when the backend is running:
-
-- **Swagger UI:** http://localhost:8000/docs
-- **ReDoc:** http://localhost:8000/redoc
-- **OpenAPI JSON:** http://localhost:8000/openapi.json
-
-The complete endpoint reference is in [API Documentation](docs/api-documentation.md). Use Swagger to inspect actual request bodies, response schemas, and authentication requirements.
-
-## Testing & UAT
-
-The development process included **15 UAT test cases** and automated backend tests, including coverage of application workflows and validation. From the backend folder with dependencies installed, a typical test command is:
-
-```powershell
-python -m pytest
-```
-
-Some tests may require an initialized test database or additional environment variables. Consult the repository's test configuration and documentation before running the full suite.
-
-## Engineering Challenges & Troubleshooting
-
-The project development notes identify several issues investigated during implementation:
-
-- Dashboard request fan-out and inconsistent KPI updates
-- Pandas / psycopg2 data integration issues
-- PostgreSQL container health-check configuration
-- Validation gaps for module field length
-- Order confirmation and inventory consistency
-
-The [Troubleshooting Guide](docs/troubleshooting.md) records the detailed root-cause analysis and fixes.
-
-## Further Documentation
-
-- [System Architecture](docs/architecture.md)
-- [Database Schema](docs/database-schema.md)
-- [API Documentation](docs/api-documentation.md)
-- [Troubleshooting & Root-Cause Analysis](docs/troubleshooting.md)
-
-## Demo Walkthrough
-
-For a short project demonstration:
-
-1. Start Docker Desktop and run `docker compose up -d`.
-2. Open http://localhost:3000 and sign in using a configured demo account.
-3. Show dashboard KPIs, trends, and category breakdowns.
-4. Explore products, retailers, distributors, and inventory.
-5. Demonstrate order creation and explain inventory consistency controls.
-6. Import a sample Excel sheet and review validation errors.
-7. Open Troubleshooting to discuss tracked defects and resolutions.
-8. Show Swagger UI and the Docker containers to explain the technical architecture.
-
-**Demo credentials:** Use the sample accounts defined in your project's seed data or original README. Do not publish real passwords or production credentials.
-
-## Potential Enhancements
-
-- Sales and demand forecasting
-- Automated low-stock notifications
-- More advanced retailer and distributor analytics
-- CI/CD pipeline and automated deployment
-- Enhanced audit logging and monitoring
-
-## About This Project
-
-BizSync demonstrates practical full-stack engineering across API development, relational database design, transactional inventory workflows, Excel validation, SQL-based reporting, Docker deployment, automated testing, UAT, and technical documentation.
+</div>
 
 ---
 
-**Note for maintainers:** Confirm the exact local setup scripts, demo accounts, and test prerequisites against the final project files before publishing. This README intentionally avoids inventing credentials or unverified endpoint lists.
+## Table of Contents
+
+1. [Overview](#1-overview)
+2. [Key Features](#2-key-features)
+3. [System Architecture](#3-system-architecture)
+4. [Technology Stack](#4-technology-stack)
+5. [Project Structure](#5-project-structure)
+6. [Database Design](#6-database-design)
+7. [Core Workflows](#7-core-workflows)
+8. [Security and Access Control](#8-security-and-access-control)
+9. [API Overview](#9-api-overview)
+10. [Getting Started](#10-getting-started)
+11. [Excel Import Guide](#11-excel-import-guide)
+12. [Testing](#12-testing)
+13. [Performance Decisions](#13-performance-decisions)
+14. [Engineering Log: Real Issues and Fixes](#14-engineering-log-real-issues-and-fixes)
+15. [Documentation Index](#15-documentation-index)
+16. [Roadmap](#16-roadmap)
+17. [Author](#17-author)
+
+---
+
+## 1. Overview
+
+FMCG (Fast-Moving Consumer Goods) companies sell through layers of distributors and retailers. Leadership needs reliable answers to a few recurring questions: what is selling, which distributors and retailers perform best, where is stock running low, and where do operational problems occur. In practice this is often tracked across disconnected spreadsheets.
+
+**BizSync** replaces that with a single database-backed system:
+
+- An **order workflow** that can never oversell inventory, even under concurrent requests.
+- A **bulk Excel import** pipeline that validates every row and reports exactly what was wrong.
+- An **analytics dashboard** where every figure is computed with SQL aggregation inside PostgreSQL.
+- **Role-based access control** enforced on the server, not just hidden in the UI.
+- A built-in **troubleshooting / root-cause-analysis tracker** for operational issues.
+
+> **Note on data:** all data in this repository is synthetic. Product names are recognisable FMCG labels used purely for realism; retailers, contacts, orders and transactions are generated by scripts (Faker plus a hand-written catalogue). No real company data is used.
+
+---
+
+## 2. Key Features
+
+| Area | Capabilities |
+|---|---|
+| **Master data** | Products, distributors, retailers with search, filters, pagination, add/edit modals, soft-deactivation |
+| **Orders** | Multi-line order creation with live totals; guarded status workflow `PENDING → CONFIRMED → PROCESSING → SHIPPED → DELIVERED` plus `CANCELLED` |
+| **Inventory** | Per-distributor stock, reserved vs. available quantity, low-stock detection, immutable stock-movement audit trail |
+| **Excel import** | Products, retailers, sales and inventory; per-row validation, duplicate and foreign-key checks, downloadable error report |
+| **Analytics** | 8 KPI cards and 5 charts: sales trend, revenue by category, top products, top retailers, distributor performance |
+| **Troubleshooting** | Issue tracker following Problem → Root Cause → Resolution → Status, with server-managed `resolved_at` |
+| **Security** | JWT authentication, bcrypt password hashing, 5 roles with server-side authorization |
+| **Quality** | 28 automated pytest tests, 15 documented UAT cases, auto-generated OpenAPI docs |
+| **Deployment** | One-command Docker Compose stack (PostgreSQL, API, frontend) |
+
+---
+
+## 3. System Architecture
+
+### 3.1 High-level view
+
+```mermaid
+flowchart LR
+    User(["User (Browser)"])
+
+    subgraph FE["Frontend container - React SPA :3000"]
+        direction TB
+        Pages["Pages and Components"]
+        Axios["Axios client with JWT interceptor"]
+        Pages --> Axios
+    end
+
+    subgraph BE["Backend container - FastAPI :8000"]
+        direction TB
+        Routers["Routers (HTTP layer)"]
+        Services["Services (business rules)"]
+        Repos["Repositories (SQL queries)"]
+        Routers --> Services --> Repos
+    end
+
+    subgraph DB["Database container - PostgreSQL :5432"]
+        Tables[("10 tables")]
+    end
+
+    Excel[/"Excel files (.xlsx)"/]
+
+    User --> Pages
+    Axios -- "REST / JSON + Bearer token" --> Routers
+    Repos -- "SQLAlchemy / psycopg2" --> Tables
+    Excel -- "upload" --> Routers
+    Services -. "pandas + openpyxl" .-> Excel
+```
+
+### 3.2 Backend layering
+
+Every feature is split into the same three layers. Each layer only knows about the one below it.
+
+```mermaid
+flowchart TB
+    R["<b>Router</b><br/>Path and query params, status codes,<br/>maps domain exceptions to HTTP errors"]
+    S["<b>Service</b><br/>Business rules: duplicate checks,<br/>workflow transitions, transaction logic"]
+    P["<b>Repository</b><br/>SQLAlchemy queries only,<br/>no HTTP and no business rules"]
+    D[("PostgreSQL")]
+
+    R --> S --> P --> D
+```
+
+**Why this matters:** `order_service` has no idea it is being called from an HTTP request. It raises plain Python exceptions such as `InsufficientInventoryError`, and only the router decides that means `409 Conflict`. The same logic could be reused by a CLI tool or scheduled job unchanged.
+
+### 3.3 Container topology
+
+```mermaid
+flowchart TB
+    subgraph Compose["docker-compose.yml"]
+        PG["postgres<br/>postgres:16-alpine<br/>port 5432<br/>volume: bizsync_pg_data"]
+        API["backend<br/>FastAPI + Uvicorn<br/>port 8000"]
+        WEB["frontend<br/>React build served on port 3000"]
+    end
+
+    WEB -- "HTTP calls to /api" --> API
+    API -- "DATABASE_URL" --> PG
+    PG -. "healthcheck: pg_isready" .-> API
+```
+
+The backend declares `depends_on: postgres: condition: service_healthy`, so it only starts once PostgreSQL reports healthy.
+
+---
+
+## 4. Technology Stack
+
+| Layer | Technology | Why it was chosen |
+|---|---|---|
+| **Frontend** | React 18, React Router, Axios, Recharts, hand-written CSS | Component model matches the app's pages; Axios interceptors centralise token handling; Recharts covers every chart type needed |
+| **Backend** | Python, FastAPI, Pydantic, SQLAlchemy | Request validation built in; native async; OpenAPI docs generated from the code itself; ORM keeps queries readable |
+| **Database** | PostgreSQL | Foreign keys, unique constraints, native enums and row-level locking are load-bearing for order/inventory correctness |
+| **Data import** | pandas, openpyxl | Mature tabular handling for per-row validation of `.xlsx` files |
+| **Auth** | python-jose (JWT), bcrypt | Stateless signed tokens; deliberately slow, salted password hashing |
+| **Testing** | pytest, FastAPI TestClient | Fast, readable tests against an isolated test database |
+| **Infrastructure** | Docker, Docker Compose | Reproducible three-service deployment with health-gated startup |
+
+---
+
+## 5. Project Structure
+
+```text
+bizsync/
+├── backend/
+│   ├── app/
+│   │   ├── main.py                 # FastAPI app, CORS, router registration
+│   │   ├── config.py               # Typed settings from environment variables
+│   │   ├── database.py             # Engine, session factory, get_db dependency
+│   │   ├── create_tables.py        # Creates all tables from the models
+│   │   ├── seed_data.py            # Generates realistic demo data
+│   │   ├── generate_sample_excel.py# Builds sample import files
+│   │   ├── models/                 # SQLAlchemy ORM models and enums
+│   │   ├── schemas/                # Pydantic request/response schemas
+│   │   ├── routers/                # HTTP layer, one file per feature
+│   │   ├── services/               # Business logic
+│   │   ├── repositories/           # Database queries
+│   │   └── utils/                  # jwt.py, security.py, deps.py, reference data
+│   ├── tests/                      # pytest suite (28 tests)
+│   ├── requirements.txt
+│   ├── pytest.ini
+│   └── Dockerfile
+├── frontend/
+│   ├── src/
+│   │   ├── pages/                  # Login, Dashboard, Products, Orders, ...
+│   │   ├── components/             # Modal, Pagination, RoleGate, ProtectedRoute
+│   │   ├── services/               # One Axios wrapper per API resource
+│   │   ├── hooks/                  # useAuth (AuthContext)
+│   │   └── App.jsx / App.css
+│   ├── package.json
+│   └── Dockerfile
+├── sample_data/                    # Sample .xlsx files (with deliberate errors)
+├── docs/
+│   ├── architecture.md
+│   ├── database-schema.md
+│   ├── api-documentation.md
+│   ├── troubleshooting.md
+│   └── uat-test-cases.md
+├── docker-compose.yml
+├── .env.example
+└── README.md
+```
+
+---
+
+## 6. Database Design
+
+### 6.1 Entity-relationship diagram
+
+```mermaid
+erDiagram
+    DISTRIBUTORS ||--o{ RETAILERS : "has"
+    DISTRIBUTORS ||--o{ INVENTORY : "stocks"
+    PRODUCTS ||--o{ INVENTORY : "stocked as"
+    RETAILERS ||--o{ ORDERS : "places"
+    DISTRIBUTORS ||--o{ ORDERS : "fulfils"
+    ORDERS ||--|{ ORDER_ITEMS : "contains"
+    PRODUCTS ||--o{ ORDER_ITEMS : "ordered as"
+    RETAILERS ||--o{ SALES_TRANSACTIONS : "buys"
+    DISTRIBUTORS ||--o{ SALES_TRANSACTIONS : "sells"
+    PRODUCTS ||--o{ SALES_TRANSACTIONS : "sold as"
+    PRODUCTS ||--o{ STOCK_MOVEMENTS : "moves"
+    DISTRIBUTORS ||--o{ STOCK_MOVEMENTS : "records"
+    USERS ||--o{ TROUBLESHOOTING_ISSUES : "reports / assigned"
+
+    USERS {
+        int id PK
+        string email UK
+        string password_hash
+        enum role
+    }
+    PRODUCTS {
+        int id PK
+        string product_code UK
+        string category
+        decimal unit_price
+        decimal cost_price
+        int reorder_level
+        bool active
+    }
+    DISTRIBUTORS {
+        int id PK
+        string distributor_code UK
+        string city
+        enum status
+    }
+    RETAILERS {
+        int id PK
+        string retailer_code UK
+        int distributor_id FK
+        enum status
+    }
+    INVENTORY {
+        int id PK
+        int product_id FK
+        int distributor_id FK
+        int quantity
+        int reserved_quantity
+    }
+    ORDERS {
+        int id PK
+        string order_number UK
+        int retailer_id FK
+        int distributor_id FK
+        enum status
+        decimal total_amount
+    }
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal unit_price
+        decimal subtotal
+    }
+    SALES_TRANSACTIONS {
+        int id PK
+        date transaction_date
+        decimal revenue
+        decimal cost
+        decimal profit
+    }
+    STOCK_MOVEMENTS {
+        int id PK
+        enum movement_type
+        int quantity
+        int reference_id
+    }
+    TROUBLESHOOTING_ISSUES {
+        int id PK
+        enum severity
+        enum status
+        string module
+        timestamp resolved_at
+    }
+```
+
+### 6.2 Notable design decisions
+
+- **`UNIQUE (product_id, distributor_id)` on `inventory`:** each distributor has exactly one stock record per product, enforced by the database rather than application code.
+- **`unit_price` on `order_items`:** the price is frozen at purchase time, so a later product price change never rewrites historical orders.
+- **Native PostgreSQL enums:** invalid statuses and roles are rejected by the database itself.
+- **`stock_movements` is an audit log:** `inventory` holds current state, `stock_movements` holds the history of how it got there.
+- **Indexes** on every foreign key and on commonly filtered columns (`product_code`, `order_date`, `transaction_date`, `category`).
+- **`create_all()` instead of Alembic:** the schema is designed once for a fixed scope; Alembic is listed under the [roadmap](#16-roadmap) for a production schema that evolves.
+
+Full column-level reference: [`docs/database-schema.md`](docs/database-schema.md).
+
+---
+
+## 7. Core Workflows
+
+### 7.1 Order status lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING : order created
+    PENDING --> CONFIRMED : confirm (inventory deducted)
+    PENDING --> CANCELLED
+    CONFIRMED --> PROCESSING
+    CONFIRMED --> CANCELLED
+    PROCESSING --> SHIPPED
+    PROCESSING --> CANCELLED
+    SHIPPED --> DELIVERED
+    DELIVERED --> [*]
+    CANCELLED --> [*]
+```
+
+The allowed transitions are defined as a single lookup table in `order_service.py`. Any other transition (for example `CONFIRMED → DELIVERED`) is rejected with `409 Conflict`.
+
+### 7.2 Order confirmation: transaction-safe inventory deduction
+
+This is the most important piece of business logic in the application.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Client
+    participant R as Router
+    participant S as Order Service
+    participant DB as PostgreSQL
+
+    C->>R: PATCH /api/orders/{id}/status {CONFIRMED}
+    R->>S: update_order_status()
+    S->>S: Validate transition is allowed
+    loop every line item
+        S->>DB: SELECT inventory ... FOR UPDATE (row lock)
+        DB-->>S: locked row
+        S->>S: available = quantity - reserved >= requested ?
+    end
+    alt any item has insufficient stock
+        S-->>R: raise InsufficientInventoryError
+        R->>DB: ROLLBACK (locks released, nothing written)
+        R-->>C: 409 Conflict (available vs requested)
+    else all items pass
+        S->>DB: UPDATE inventory (deduct quantities)
+        S->>DB: INSERT stock_movements (SALE, negative qty)
+        S->>DB: UPDATE order status = CONFIRMED
+        R->>DB: COMMIT
+        R-->>C: 200 OK
+    end
+```
+
+**Guarantees**
+
+1. **All-or-nothing:** every line item is validated *before* anything is written, so an order can never be half-deducted.
+2. **No overselling under concurrency:** `SELECT ... FOR UPDATE` makes a second simultaneous confirmation wait, then re-read the already-reduced stock.
+3. **Auditable:** every deduction writes a `stock_movements` row linked to the order.
+
+**Verified, not assumed:** two confirmation requests were fired at the same instant against stock that could satisfy only one. Exactly one succeeded, the other received `409`, and final inventory was never negative. Creating an order deliberately does *not* touch inventory; only confirmation does.
+
+### 7.3 Authentication flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as Browser
+    participant A as FastAPI
+    participant DB as PostgreSQL
+
+    U->>A: POST /api/auth/login {email, password}
+    A->>DB: Fetch user by email
+    DB-->>A: user + password_hash
+    A->>A: bcrypt.checkpw(password, hash)
+    alt valid credentials
+        A-->>U: 200 {access_token (JWT)}
+        U->>U: Store token
+        U->>A: GET /api/auth/me (Bearer token)
+        A-->>U: user id, name, email, role
+    else invalid
+        A-->>U: 401 "Incorrect email or password"
+    end
+    Note over U,A: Every later request carries Authorization: Bearer token.<br/>get_current_user verifies signature and expiry,<br/>require_role checks the role before the route runs.
+```
+
+The login endpoint returns the same message whether the email does not exist or the password is wrong, so it cannot be used to discover which emails have accounts.
+
+### 7.4 Excel import pipeline
+
+```mermaid
+flowchart TD
+    A["Upload .xlsx via POST /api/import/{entity}"] --> B{"Allowed role and<br/>.xlsx / .xls file?"}
+    B -- no --> X1["403 / 400"]
+    B -- yes --> C["pandas reads file into DataFrame"]
+    C --> D{"All required<br/>columns present?"}
+    D -- no --> X2["400: missing column list"]
+    D -- yes --> E["Validate each row independently"]
+
+    E --> F{"Missing<br/>required value?"}
+    F -- yes --> R1["Invalid row + message"]
+    F -- no --> G{"Duplicate key<br/>within file?"}
+    G -- yes --> R2["Duplicate row + message"]
+    G -- no --> H{"Foreign keys exist?<br/>Numbers in valid range?<br/>Date valid?"}
+    H -- no --> R1
+    H -- yes --> I{"Entity type"}
+
+    I -- "products / retailers / inventory" --> J["Upsert (insert or update)"]
+    I -- "sales" --> K["Insert (duplicates never merged)"]
+
+    J --> L["Commit valid rows"]
+    K --> L
+    R1 --> M["Collect error report"]
+    R2 --> M
+    L --> N["ImportSummary"]
+    M --> N
+    N --> O["processed / imported / failed /<br/>duplicates / invalid + row errors"]
+```
+
+**Why duplicates are treated differently:** products, retailers and inventory are *master data*, so re-uploading is a normal "update this record" operation. Sales transactions are *financial records*, where silently double-importing a sale would inflate revenue, so duplicates there are always rejected.
+
+### 7.5 Analytics computation
+
+```mermaid
+flowchart LR
+    Dash["Dashboard page"] -->|"6 parallel GET calls"| API["/api/dashboard/*"]
+    API --> Repo["dashboard_repository"]
+    Repo -->|"SUM / COUNT / GROUP BY"| PG[("PostgreSQL")]
+    PG -->|"aggregated rows only"| Repo
+    Repo --> API --> Dash
+    Dash --> Charts["Recharts: line, pie, bar"]
+```
+
+All figures are aggregated **inside PostgreSQL**. Raw transaction rows are never loaded into Python to be summed.
+
+---
+
+## 8. Security and Access Control
+
+### 8.1 Role permissions
+
+| Capability | ADMIN | SALES_MANAGER | SALES_REP | DISTRIBUTOR | ANALYST |
+|---|:---:|:---:|:---:|:---:|:---:|
+| View products, retailers, distributors, inventory, sales, dashboard | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Create / edit products | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Deactivate products | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Create / edit retailers | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Create / edit distributors | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Create orders | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Change order status (confirm, ship, cancel) | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Excel import | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Report a troubleshooting issue | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Update issue status / root cause / resolution | ✅ | ❌ | ❌ | ❌ | ✅ |
+
+### 8.2 Defence in depth
+
+```mermaid
+flowchart LR
+    Req["Incoming request"] --> V1["Pydantic validation<br/>(422 on bad input)"]
+    V1 --> V2["get_current_user<br/>(401 if token missing or invalid)"]
+    V2 --> V3["require_role<br/>(403 if role not allowed)"]
+    V3 --> V4["Service rules<br/>(409 on conflicts and invalid transitions)"]
+    V4 --> V5["Database constraints<br/>(FKs, unique, enums)"]
+```
+
+- **The backend is the security boundary.** The UI's `RoleGate` component only hides actions a role cannot perform, for a cleaner experience. Authorization was verified by calling the API directly with low-privilege tokens.
+- Passwords are stored as **bcrypt hashes**; plaintext is never stored or logged.
+- Raw database errors are never returned to clients.
+- Validation is applied on both frontend (usability) and backend (correctness).
+
+---
+
+## 9. API Overview
+
+All routes are prefixed with `/api`. Interactive documentation is generated automatically:
+
+| URL | Description |
+|---|---|
+| `http://localhost:8000/docs` | Swagger UI, with a **Try it out** button on every endpoint |
+| `http://localhost:8000/redoc` | ReDoc reference |
+| `http://localhost:8000/openapi.json` | Raw OpenAPI specification |
+
+| Tag | Endpoints |
+|---|---|
+| **Authentication** | `POST /auth/login`, `GET /auth/me` |
+| **Products** | `GET/POST /products`, `GET/PUT/DELETE /products/{id}` |
+| **Distributors** | `GET/POST /distributors`, `GET/PUT /distributors/{id}`, `GET /distributors/{id}/retailer-count` |
+| **Retailers** | `GET/POST /retailers`, `GET/PUT /retailers/{id}` |
+| **Inventory** | `GET /inventory` (read-only; changes happen via orders and imports) |
+| **Orders** | `GET/POST /orders`, `GET /orders/{id}`, `PATCH /orders/{id}/status` |
+| **Sales** | `GET /sales` |
+| **Excel Import** | `POST /import/{entity}` where entity is `products`, `retailers`, `sales` or `inventory` |
+| **Analytics** | `GET /dashboard/summary`, `/sales-trend`, `/top-products`, `/top-retailers`, `/category-performance`, `/distributor-performance` |
+| **Troubleshooting** | `GET/POST /issues`, `GET/PUT /issues/{id}` |
+| **System** | `GET /`, `GET /health`, `GET /health/db` |
+
+**Standard error codes:** `400` malformed request · `401` missing/invalid token · `403` role not permitted · `404` not found · `409` conflict (duplicate, invalid transition, insufficient stock) · `422` validation failure.
+
+Full reference: [`docs/api-documentation.md`](docs/api-documentation.md).
+
+---
+
+## 10. Getting Started
+
+### Prerequisites
+
+| Tool | Version | Needed for |
+|---|---|---|
+| Python | 3.11+ (tested on 3.12 and 3.14) | Backend, local run |
+| Node.js + npm | LTS | Frontend, local run |
+| PostgreSQL | 16+ | Local run |
+| Docker Desktop | Recent | Docker run |
+
+### Environment variables
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Purpose | Default in `.env.example` |
+|---|---|---|
+| `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` | Database credentials (Docker) | `bizsync_user` / `bizsync_pass` / `bizsync` |
+| `DATABASE_URL` | Connection string for local backend runs | `postgresql://bizsync_user:bizsync_pass@localhost:5432/bizsync` |
+| `JWT_SECRET_KEY` | Signs authentication tokens | placeholder, **change this** |
+| `CORS_ORIGINS` | Allowed frontend origin(s) | `http://localhost:3000` |
+| `REACT_APP_API_URL` | API base URL used by the frontend | `http://localhost:8000/api` |
+
+> ⚠️ The credentials above are development defaults. Use a long random `JWT_SECRET_KEY` and real database credentials for anything beyond local demos. Never commit your real `.env` (it is listed in `.gitignore`).
+
+### Option A: Run with Docker (recommended)
+
+```bash
+git clone https://github.com/Trisha-G2212/bizsync.git
+cd bizsync
+cp .env.example .env
+
+docker-compose up --build
+```
+
+In a second terminal, create the tables and load demo data **inside the backend container**:
+
+```bash
+docker exec -it bizsync-backend python -m app.create_tables
+docker exec -it bizsync-backend python -m app.seed_data
+```
+
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:3000 |
+| API / Swagger | http://localhost:8000/docs |
+| PostgreSQL | localhost:5432 |
+
+Stop everything with `docker-compose down` (data persists in the `bizsync_pg_data` volume).
+
+### Option B: Run locally
+
+**1. Database** (in `psql`):
+
+```sql
+CREATE USER bizsync_user WITH PASSWORD 'bizsync_pass';
+CREATE DATABASE bizsync OWNER bizsync_user;
+```
+
+**2. Backend**
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\Activate.ps1          # Windows PowerShell
+# source venv/bin/activate         # macOS / Linux
+pip install -r requirements.txt
+
+python -m app.create_tables        # create the 10 tables
+python -m app.seed_data            # load demo data
+uvicorn app.main:app --reload      # http://localhost:8000
+```
+
+**3. Frontend** (new terminal)
+
+```bash
+cd frontend
+npm install
+npm start                          # http://localhost:3000
+```
+
+### Demo accounts
+
+| Role | Email | Password |
+|---|---|---|
+| ADMIN | `admin@bizsync.com` | `admin123` |
+| SALES_MANAGER | `priya.manager@bizsync.com` | `manager123` |
+| SALES_REP | `rahul.rep@bizsync.com` | `rep123` |
+| DISTRIBUTOR | `distributor@bizsync.com` | `dist123` |
+| ANALYST | `ananya.analyst@bizsync.com` | `analyst123` |
+
+### Suggested demo walkthrough
+
+1. Log in as **admin** and review the **Dashboard**.
+2. Open **Orders**, create an order, then **Confirm** it and watch inventory drop.
+3. Request more stock than exists and observe the clear `409` message with available vs. requested quantities.
+4. Open **Excel Import**, upload `sample_data/products.xlsx`, and review the row-level error report.
+5. Log in as **analyst** to see write actions hidden in the UI and rejected by the API.
+
+---
+
+## 11. Excel Import Guide
+
+Navigate to **Excel Import** (ADMIN or SALES_MANAGER), choose a data type, and upload an `.xlsx` file. Sample files with deliberately broken rows are provided in [`sample_data/`](sample_data/).
+
+| Type | Required columns | Behaviour on re-import |
+|---|---|---|
+| **Products** | `product_code`, `name`, `category`, `brand`, `unit_price`, `cost_price` (optional `reorder_level`) | Upsert by `product_code` |
+| **Retailers** | `retailer_code`, `name`, `owner_name`, `phone`, `city`, `state`, `distributor_code` | Upsert by `retailer_code` |
+| **Sales** | `transaction_id`, `transaction_date`, `retailer_code`, `distributor_code`, `product_code`, `quantity`, `revenue`, `cost` | Duplicate `transaction_id` rows rejected |
+| **Inventory** | `product_code`, `distributor_code`, `quantity` | Adds to stock and writes a `PURCHASE` movement |
+
+**Example result**
+
+```json
+{
+  "records_processed": 6,
+  "successfully_imported": 3,
+  "failed": 3,
+  "duplicates": 1,
+  "invalid_rows": 2,
+  "errors": [
+    { "row": 5, "message": "product_code missing" },
+    { "row": 6, "message": "unit_price and cost_price must be positive numbers" },
+    { "row": 7, "message": "duplicate product_code 'PRD0051' within file" }
+  ]
+}
+```
+
+`failed` is always `duplicates + invalid_rows`. Row numbers match the Excel sheet (header = row 1). The UI offers the error list as a downloadable CSV.
+
+---
+
+## 12. Testing
+
+### Automated tests (pytest)
+
+```bash
+# one-time: create an isolated test database (never touches your real data)
+#   psql:  CREATE DATABASE bizsync_test OWNER bizsync_user;
+
+cd backend
+pytest
+```
+
+Expected: **`28 passed`**.
+
+| File | Focus |
+|---|---|
+| `test_auth.py` | Login success/failure, token validation, role enforcement |
+| `test_products.py` | Creation, duplicate rejection, validation, deactivation |
+| `test_orders.py` | Order creation, **insufficient-inventory rejection with unchanged stock**, inventory deduction, invalid transitions |
+| `test_excel_import.py` | Missing fields, in-file duplicates, negative values, wrong columns, wrong file type, role restriction |
+| `test_dashboard.py` | Exact aggregation maths, including a **regression test for the join fan-out bug** |
+
+**Test design notes**
+
+- Tests run against a dedicated `bizsync_test` database.
+- Each simulated request gets its own SQLAlchemy session, mirroring production (sessions are not thread-safe and the test client runs handlers on a worker thread).
+- Tables are emptied after each test so tests cannot affect one another.
+
+### Manual UAT
+
+Fifteen formal test cases (ID, preconditions, steps, expected vs. actual result, status) are documented in [`docs/uat-test-cases.md`](docs/uat-test-cases.md).
+
+---
+
+## 13. Performance Decisions
+
+| Concern | Approach |
+|---|---|
+| Large result sets | Server-side pagination (`LIMIT/OFFSET`) on every list endpoint |
+| Filtering | Done in SQL, never by slicing in Python |
+| Dashboard maths | `SUM / COUNT / GROUP BY` executed by PostgreSQL |
+| Lookups | Indexes on all foreign keys and frequently filtered columns |
+| Join fan-out | Independent aggregations merged by ID instead of multi-fact joins (see below) |
+| Connections | One short-lived session per request via `get_db`, always closed |
+| Frontend | Dashboard fetches its six datasets in parallel with `Promise.all` |
+
+---
+
+## 14. Engineering Log: Real Issues and Fixes
+
+Every item below was found and fixed during development. The full write-up is in [`docs/troubleshooting.md`](docs/troubleshooting.md).
+
+| # | Issue | Root cause | Fix |
+|---|---|---|---|
+| 1 | Inflated revenue (a distributor showed ~₹23M vs. ₹5.9M company total) | Joining `orders` and `sales_transactions` in one query multiplied rows (fan-out) before `SUM` | Separate aggregations merged by ID; verified against hand-written SQL; permanent regression test |
+| 2 | Pie chart rendered blank | API returns `Decimal` as JSON strings; Recharts `<Pie>` needs real numbers | Convert numeric fields with `Number()` before charting |
+| 3 | Excel import crashed on every upload | `pandas.read_excel` was given raw bytes | Wrap in `io.BytesIO` |
+| 4 | Seed script failed hashing passwords | `passlib` incompatible with newer `bcrypt` | Call `bcrypt` directly |
+| 5 | Swagger "Authorize" didn't match login | `OAuth2PasswordBearer` form vs. JSON login | Switched to `HTTPBearer` |
+| 6 | Raw DB error on long Module value | Frontend had no limit matching the `varchar(80)` column | Added `maxLength={80}` |
+| 7 | Flaky test transactions | Shared SQLAlchemy session across test thread and request thread | Per-request sessions in test fixtures |
+| 8 | Test users rejected | `.test` is a reserved TLD that the email validator correctly refuses | Use a normal-looking fake domain |
+| 9 | Noisy Postgres logs in Docker | `pg_isready` defaulted to a database named after the user | Added `-d $POSTGRES_DB` to the healthcheck |
+| 10 | Docker Desktop would not start on Windows | WSL2 / Virtual Machine Platform features disabled | Enabled the features and restarted |
+
+---
+
+## 15. Documentation Index
+
+| Document | Contents |
+|---|---|
+| [`docs/architecture.md`](docs/architecture.md) | Layering, transaction-safety design, technology rationale |
+| [`docs/database-schema.md`](docs/database-schema.md) | Table-by-table columns, types, constraints |
+| [`docs/api-documentation.md`](docs/api-documentation.md) | Endpoint reference with required roles and errors |
+| [`docs/troubleshooting.md`](docs/troubleshooting.md) | Problem → Root Cause → Resolution log |
+| [`docs/uat-test-cases.md`](docs/uat-test-cases.md) | 15 formal UAT test cases |
+
+---
+
+## 16. Roadmap
+
+- [ ] Alembic migrations for an evolving production schema
+- [ ] Refresh tokens and token revocation
+- [ ] CI pipeline (GitHub Actions) running pytest on every push
+- [ ] Email / in-app notifications for low stock and order status changes
+- [ ] Retailer and distributor detail pages with per-entity analytics
+- [ ] Frontend unit and end-to-end tests
+- [ ] Production-hardened Docker setup (multi-stage builds, secrets management, reverse proxy / TLS)
+
+---
+
+## 17. Author
+
+**G. Trisha**
+B.Tech, Electronics and Computer Engineering, Manipal Institute of Technology, Bengaluru
+GitHub: [@Trisha-G2212](https://github.com/Trisha-G2212)
+
+---
+
+<div align="center">
+
+If you found this project useful or interesting, consider giving it a ⭐
+
+</div>
